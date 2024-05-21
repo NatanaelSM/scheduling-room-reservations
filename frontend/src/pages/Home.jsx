@@ -2,8 +2,28 @@ import { InputGroup, Flex, Input, InputRightElement, IconButton } from "@chakra-
 import { CardReserva } from "../components/CardReserva";
 import { Navbar } from "../components/Navbar";
 import { SearchIcon } from '@chakra-ui/icons'
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export function Home() {
+
+    const [usuario, setUsuario] = useState({});
+    const [reservas, setReserva] = useState([]);
+
+    useEffect(() => {
+        fetchReservas();
+    }, []);
+
+    const fetchReservas = async () => {
+        try{
+            const req = await axios.get('http://localhost:8800/reservas');
+            console.log(req);
+            setReserva(req.data);
+        }catch(error){
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <Navbar />
@@ -34,14 +54,9 @@ export function Home() {
                 wrap='wrap'
                 px='6rem'
                 mt='2rem'>
-                <CardReserva nome='Natanael' sobrenome='Macahdo'/>
-                <CardReserva />
-                <CardReserva />
-                <CardReserva />
-                <CardReserva />
-                <CardReserva />
-                <CardReserva />
-
+                {reservas.map((reserva, index) => {
+                    return <CardReserva key={index} reserva={reserva}/>
+                })}
             </Flex>
         </>
     )

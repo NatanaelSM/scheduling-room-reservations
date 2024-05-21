@@ -1,32 +1,33 @@
 import { Flex, Heading } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
+export function PerfilUsuario({  }) {
+    const [iniciais, setIniciais] = useState('');
 
-export function PerfilUsuario({nomeUsuario, sobrenomeUsuario}){
+    // useEffect(() => {
+    //     getIniciais();
+    // }, []);
 
-    const [iniciais, setIniciais] = useState('')
+    // const getIniciais = () => {
+    //     const nome = nomeUsuario?.split('');
 
-    const getIniciais = () => {
-        
-        let nome = nomeUsuario.split('');
-        let inicialNome = nome[0];
+    //     if (nome && nome.length > 0) {
+    //         const iniciaisNome = nome[0].toLowerCase() + nome[1].toLowerCase();
+    //         setIniciais(iniciaisNome);
+    //     } else {
+    //         setIniciais('');
+    //     }
+    // };
 
-        let sobrenome = sobrenomeUsuario.split('');
-        let inicialSobrenome = sobrenome[0];
-
-        setIniciais(inicialNome + inicialSobrenome)
-
-    }
-
-    return(
+    return (
         <Flex
-        justifyContent='center'
-        alignItems='center'
+            justifyContent='center'
+            alignItems='center'
             borderRadius='2rem'
             w='4rem'
             h='4rem'
             bg='blue'>
-                <Heading color='white'>{iniciais}</Heading>
+            <Heading color='white'>Teste</Heading>
         </Flex>
-    )
+    );
 }
