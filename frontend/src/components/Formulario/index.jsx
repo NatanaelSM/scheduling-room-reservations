@@ -1,6 +1,56 @@
-import { Flex, Heading, Box, FormControl, FormLabel, Input, Button, Textarea, InputGroup, InputRightElement } from "@chakra-ui/react"
+import { Flex, Heading, Box, FormControl, FormLabel, Input, Button, Textarea } from "@chakra-ui/react"
+import axios from "axios"
+import { useRef, useState } from "react"
 
 export function Formulario() {
+
+    const [status, setStatus] = useState("");
+
+    const nome_sala = useRef(null);
+    const local_sala = useRef(null);
+    const data_uso = useRef(null);
+    const hora_inicio_uso = useRef(null);
+    const hora_final_uso = useRef(null);
+    const responsavel = useRef(null);
+    const motivo_uso = useRef(null);
+    const info_gerais = useRef(null);
+    const convidados = useRef(null);
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        const dadosReserva = {
+            nome_sala: nome_sala.current.value,
+            local_sala: local_sala.current.value,
+            data_uso: data_uso.current.value,
+            hora_inicio_uso: hora_inicio_uso.current.value,
+            hora_final_uso: hora_final_uso.current.value,
+            responsavel: responsavel.current.value,
+            motivo_uso: motivo_uso.current.value,
+            info_gerais: info_gerais.current.value,
+            convidados: convidados.current.value
+        };
+
+        try {
+            await axios.post('http://localhost:8800/addReserva', dadosReserva);
+
+            setStatus("Reserva cadastrada com sucesso!")
+
+            nome_sala.current.value = "";
+            local_sala.current.value = "";
+            data_uso.current.value = "";
+            hora_inicio_uso.current.value = "";
+            hora_final_uso.current.value = "";
+            responsavel.current.value = "";
+            motivo_uso.current.value = "";
+            info_gerais.current.value = "";
+            convidados.current.value = "";
+
+        } catch (error) {
+            setStatus("Falha ao fazer a reserva! ")
+        }
+    }
 
     return (
         <Flex
@@ -26,28 +76,28 @@ export function Formulario() {
                 <Box
                     h='80%'
                     w='100%'>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <Box
                             mb='2rem'>
-                            <FormControl>
+                            <FormControl isRequired>
                                 <FormLabel>Nome da sala</FormLabel>
-                                <Input type='text' />
+                                <Input ref={nome_sala} type='text' />
                             </FormControl>
                         </Box>
 
                         <Box
                             mb='2rem'>
-                            <FormControl>
+                            <FormControl isRequired>
                                 <FormLabel>Responsável da sala</FormLabel>
-                                <Input type='text' />
+                                <Input ref={responsavel} type='text' />
                             </FormControl>
                         </Box>
 
                         <Box
                             mb='2rem'>
-                            <FormControl>
+                            <FormControl isRequired>
                                 <FormLabel>Local da sala</FormLabel>
-                                <Input type='text' />
+                                <Input ref={local_sala} type='text' />
                             </FormControl>
                         </Box>
 
@@ -55,61 +105,50 @@ export function Formulario() {
                             gap='2rem'>
                             <Box
                                 mb='2rem'>
-                                <FormControl>
+                                <FormControl isRequired>
                                     <FormLabel>Data de uso</FormLabel>
-                                    <Input type='date' />
+                                    <Input ref={data_uso} type='date' />
                                 </FormControl>
                             </Box>
                             <Box
                                 mb='2rem'>
-                                <FormControl>
+                                <FormControl isRequired>
                                     <FormLabel>Início do uso</FormLabel>
-                                    <Input type='time' />
+                                    <Input ref={hora_inicio_uso} type='time' />
                                 </FormControl>
                             </Box>
                             <Box
                                 mb='2rem'>
-                                <FormControl>
+                                <FormControl isRequired>
                                     <FormLabel>Final do uso</FormLabel>
-                                    <Input type='time' />
+                                    <Input ref={hora_final_uso} type='time' />
                                 </FormControl>
                             </Box>
                         </Flex>
 
                         <Box
                             mb='2rem'>
-                            <FormControl>
+                            <FormControl isRequired>
                                 <FormLabel>Motivo do uso</FormLabel>
-                                <Textarea />
+                                <Textarea ref={motivo_uso} />
                             </FormControl>
                         </Box>
 
                         <Box
                             mb='2rem'>
-                            <FormControl>
+                            <FormControl isRequired>
                                 <FormLabel>Informações gerais</FormLabel>
-                                <Textarea />
+                                <Textarea ref={info_gerais} />
                             </FormControl>
                         </Box>
 
-                        <Flex
-                            gap='2rem'>
-                            <Box
-                                w='50%'
-                                mb='2rem'>
-                                <FormControl>
-                                    <FormLabel>Convidados</FormLabel>
-                                    <InputGroup>
-                                        <Input type='text' />
-                                        <InputRightElement w='5rem'>
-                                            <Button >
-                                                Adicionar
-                                            </Button>
-                                        </InputRightElement>
-                                    </InputGroup>
-                                </FormControl>
-                            </Box>
-                        </Flex>
+                        <Box
+                            mb='2rem'>
+                            <FormControl isRequired>
+                                <FormLabel>Convidados</FormLabel>
+                                <Input ref={convidados} type='text' />
+                            </FormControl>
+                        </Box>
 
                         <Flex
                             justifyContent='center'
@@ -121,10 +160,16 @@ export function Formulario() {
                                 Registrar
                             </Button>
                         </Flex>
-
                     </form>
                 </Box>
+                {status && (
+                    <Box fontWeight='bold' mt="2rem" textAlign="center" color="white">
+                        {status}
+                    </Box>
+                )}
             </Flex>
+
+
 
         </Flex>
     )

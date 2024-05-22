@@ -1,69 +1,56 @@
-import { InputGroup, Flex, Input, InputRightElement, IconButton, Button } from "@chakra-ui/react";
+import { Flex, Input } from "@chakra-ui/react";
 import { CardReserva } from "../components/CardReserva";
 import { Navbar } from "../components/Navbar";
-import { SearchIcon } from '@chakra-ui/icons'
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export function Home() {
-
     const [usuario, setUsuario] = useState({});
-    const [reservas, setReserva] = useState([]);
+    const [reservas, setReservas] = useState([]);
+    const [filtroNomeSala, setFiltroNomeSala] = useState("");
 
     useEffect(() => {
         fetchReservas();
-        teste();
-    },[]);
+    }, []);
 
     const fetchReservas = async () => {
-        try{
+        try {
             const req = await axios.get('http://localhost:8800/reservas');
-            setReserva(req.data);
-        }catch(error){
+            const reservas = req.data;
+            reservas.sort((a, b) => new Date(a.data_uso) - new Date(b.data_uso));
+            setReservas(reservas);
+        } catch (error) {
             console.log(error);
         }
-    }
+    };
 
-    const teste = () =>{
-        reservas.forEach((reserva, index)=>{
-            console.log(reserva)
-        })
-    }
+    const handleFiltroNomeSalaChange = (e) => {
+        setFiltroNomeSala(e.target.value);
+    };
 
     return (
         <>
             <Navbar />
 
-            <Flex
-                px='8rem'
-                mt='2rem'
-                w='30%'>
-                <InputGroup >
-                    <Input
-                        bg='white'
-                        pr='4.5rem'
-                        type="text"
-                        placeholder='Buscar...'
-                        color='black'
-                    />
-                    <InputRightElement>
-                        <IconButton
-                            aria-label='Search database'
-                            bg='none'
-                            _hover={{ bg: 'none' }}
-                            icon={<SearchIcon />} />
-                    </InputRightElement>
-                </InputGroup>
+            <Flex pl='7rem' mt='2rem' w='30%'>
+                <Input
+                    bg='white'
+                    pr='4.5rem'
+                    type="text"
+                    placeholder='Filtrar...'
+                    color='black'
+                    value={filtroNomeSala}
+                    onChange={handleFiltroNomeSalaChange}
+                />
             </Flex>
 
-            <Flex
-                wrap='wrap'
-                px='6rem'
-                mt='2rem'>
-                {reservas.map((reserva, index) => {
-                    return <CardReserva key={index} reserva={reserva}/>
-                })}
+            <Flex wrap='wrap' px='6rem' mt='2rem'>
+                {reservas
+                    .filter(reserva => reserva.nome_sala.toLowerCase().includes(filtroNomeSala.toLowerCase()))
+                    .map((reserva, index) => (
+                        <CardReserva key={index} reserva={reserva} />
+                    ))}
             </Flex>
         </>
-    )
+    );
 }
