@@ -1,4 +1,4 @@
-import { InputGroup, Flex, Input, InputRightElement, IconButton } from "@chakra-ui/react";
+import { InputGroup, Flex, Input, InputRightElement, IconButton, Button } from "@chakra-ui/react";
 import { CardReserva } from "../components/CardReserva";
 import { Navbar } from "../components/Navbar";
 import { SearchIcon } from '@chakra-ui/icons'
@@ -12,16 +12,22 @@ export function Home() {
 
     useEffect(() => {
         fetchReservas();
-    }, []);
+        teste();
+    },[]);
 
     const fetchReservas = async () => {
         try{
             const req = await axios.get('http://localhost:8800/reservas');
-            console.log(req);
             setReserva(req.data);
         }catch(error){
             console.log(error);
         }
+    }
+
+    const teste = () =>{
+        reservas.forEach((reserva, index)=>{
+            console.log(reserva)
+        })
     }
 
     return (
