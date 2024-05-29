@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { db } from "../db.js";
 
 export const getUsers = (req, res) => {
@@ -12,19 +13,16 @@ export const getUsers = (req, res) => {
 
 
 export const addUser = (req, res) => {
+
     const q = "INSERT INTO usuario(`nome`, `usuario`, `senha`) VALUES (?, ?, ?)";
 
-    const values = [
-        req.body.nome,
-        req.body.usuario,
-        req.body.senha,
-    ];
+    const {nome, usuario} = req.body;
 
-    db.query(q, values, () => {
-        if (err) {
-            return res.status(500).json(err);
-        }
+    const {senha} = req.body;
+    const hashedPassword = bcrypt.hashSync(senha, 8)
 
-        return res.status(200).json(data);
+    db.query(q, [nome, usuario, hashedPassword], (err, result) => {
+        if (err) return res.status(500).send('Erro no servidor.' + err);
+        return res.status(200).send('Usuário registrado com sucesso!' );
     });
 };

@@ -1,15 +1,18 @@
 import { db } from "../db.js";
 
 export const getReservas = (req, res) => {
-    const q = "SELECT * FROM reserva";
+    const q = "SELECT * FROM reserva WHERE usuario_id = ?";
 
-    db.query(q, (err, data) => {
+    const id = req.params.id;
+
+    db.query(q, [id], (err, data) => {
         if (err) return res.json(err);
         return res.status(200).json(data)
     })
 }
+
 export const addReserva = (req, res) => {
-    const q = "INSERT INTO reserva(nome_sala, local_sala, data_uso, hora_inicio_uso, hora_final_uso, responsavel, motivo_uso, info_gerais, convidados) VALUES (?,?,?,?,?,?,?,?,?)";
+    const q = "INSERT INTO reserva(nome_sala, local_sala, data_uso, hora_inicio_uso, hora_final_uso, responsavel, motivo_uso, info_gerais, convidados, usuario_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
     const values = [
         req.body.nome_sala,
@@ -21,6 +24,7 @@ export const addReserva = (req, res) => {
         req.body.motivo_uso,
         req.body.info_gerais,
         req.body.convidados,
+        req.body.usuario_id
     ];
 
     db.query(q, values, (err, result) => {
