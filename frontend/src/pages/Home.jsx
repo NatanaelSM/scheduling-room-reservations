@@ -4,23 +4,27 @@ import { Navbar } from "../components/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export function Home() {
-    const [usuario, setUsuario] = useState({});
+
+export function Home({ token }) {
     const [reservas, setReservas] = useState([]);
     const [filtroNomeSala, setFiltroNomeSala] = useState("");
 
     useEffect(() => {
         fetchReservas();
-    }, []);
+    }, [token]);
 
     const fetchReservas = async () => {
         try {
-            const req = await axios.get('http://localhost:8800/reservas');
+            const req = await axios.get('http://localhost:8800/reservas',{
+                headers: { Authorization: token },
+            });
+
             const reservas = req.data;
             reservas.sort((a, b) => new Date(a.data_uso) - new Date(b.data_uso));
             setReservas(reservas);
         } catch (error) {
-            console.log(error);
+            console.log("erro");
+
         }
     };
 

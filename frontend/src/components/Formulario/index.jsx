@@ -1,10 +1,8 @@
 import { Flex, Heading, Box, FormControl, FormLabel, Input, Button, Textarea } from "@chakra-ui/react"
-import axios from "axios"
 import { useRef, useState } from "react"
+import axios from "axios";
 
-export function Formulario() {
-
-    const [status, setStatus] = useState("");
+export function Formulario({ token }) {
 
     const nome_sala = useRef(null);
     const local_sala = useRef(null);
@@ -17,7 +15,6 @@ export function Formulario() {
     const convidados = useRef(null);
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
         const dadosReserva = {
@@ -29,13 +26,15 @@ export function Formulario() {
             responsavel: responsavel.current.value,
             motivo_uso: motivo_uso.current.value,
             info_gerais: info_gerais.current.value,
-            convidados: convidados.current.value
+            convidados: convidados.current.value,
         };
-
+        
         try {
-            await axios.post('http://localhost:8800/addReserva', dadosReserva);
+            const req = await axios.post("http://localhost:8800/addReserva", dadosReserva, {
+                headers: { Authorization: token },
+            });
 
-            setStatus("Reserva cadastrada com sucesso!")
+            setStatus("Reserva cadastrada com sucesso!");
 
             nome_sala.current.value = "";
             local_sala.current.value = "";
@@ -46,11 +45,11 @@ export function Formulario() {
             motivo_uso.current.value = "";
             info_gerais.current.value = "";
             convidados.current.value = "";
-
         } catch (error) {
-            setStatus("Falha ao fazer a reserva! ")
+            console.log("Erro ao fazer a reserva:", error);
         }
     }
+
 
     return (
         <Flex
@@ -162,15 +161,7 @@ export function Formulario() {
                         </Flex>
                     </form>
                 </Box>
-                {status && (
-                    <Box fontWeight='bold' mt="2rem" textAlign="center" color="white">
-                        {status}
-                    </Box>
-                )}
             </Flex>
-
-
-
         </Flex>
     )
 

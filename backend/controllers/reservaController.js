@@ -1,14 +1,30 @@
 import { db } from "../db.js";
+import jwt from "jsonwebtoken";
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 export const getReservas = (req, res) => {
-    const q = "SELECT * FROM reserva WHERE usuario_id = ?";
 
-    const id = req.params.id;
+    const token = req.headers['authorization'];
 
-    db.query(q, [id], (err, data) => {
-        if (err) return res.json(err);
-        return res.status(200).json(data)
+    if (!token) return res.status(401).json({ message: "Token não fornecido!" });
+
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+
+        if (err) return res.status(401).json({ message: 'Token inválido' });
+
+        const q = "SELECT * FROM reserva WHERE usuario_id = ?";
+        const id = req.params.id;
+
+        db.query(q, [id], (err, data) => {
+            if (err) return res.json(err);
+            return res.status(200).json(data)
+        })
     })
+
+
 }
 
 export const addReserva = (req, res) => {
