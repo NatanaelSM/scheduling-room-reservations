@@ -10,19 +10,36 @@ export const getUsers = (req, res) => {
     })
 }
 
+export const getUserById = (req, res) => {
+    const q = "SELECT * FROM usuario WHERE id = ?";
+
+    const id = req.params.id;
+
+    db.query(q, [id], (err, data) => {
+        if (err) return res.json(err);
+        return res.status(200).json(data)
+    })
+}
 
 
 export const addUser = (req, res) => {
+    const {nome ,usuario, senha } = req.body;
 
-    const q = "INSERT INTO usuario(`nome`, `usuario`, `senha`) VALUES (?, ?, ?)";
+    // Hashing a senha antes de armazená-la no banco de dados
+    bcrypt.hash(senha, 10, (err, hash) => {
+        if (err) {
+            console.error("Erro no bcrypt:", err);
+            return res.status(500).send("Erro no servidor!");
+        }
 
-    const {nome, usuario} = req.body;
-
-    const {senha} = req.body;
-    const hashedPassword = bcrypt.hashSync(senha, 8)
-
-    db.query(q, [nome, usuario, hashedPassword], (err, result) => {
-        if (err) return res.status(500).send('Erro no servidor.' + err);
-        return res.status(200).send('Usuário registrado com sucesso!' );
+        const q = "INSERT INTO usuario(`nome`, `senha`, `usuario`) VALUES (?, ?, ?)";
+        db.query(q, [nome ,hash, usuario], (err, result) => {
+            if (err) {
+                console.error("Erro no banco de dados:", err);
+                return res.status(500).send("Erro no servidor!");
+            }
+            res.status(201).send('Usuário criado com sucesso!');
+        });
     });
+
 };
