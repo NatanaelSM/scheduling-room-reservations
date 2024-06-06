@@ -34,7 +34,6 @@ export function Formulario({ token }) {
                 headers: { Authorization: token },
             });
 
-            setStatus("Reserva cadastrada com sucesso!");
 
             nome_sala.current.value = "";
             local_sala.current.value = "";
