@@ -1,6 +1,5 @@
 import { Flex, Input } from "@chakra-ui/react";
 import { CardReserva } from "../components/CardReserva";
-import { Navbar } from "../components/Navbar";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -34,8 +33,6 @@ export function Home({ token }) {
 
     return (
         <>
-            <Navbar />
-
             <Flex pl='7rem' mt='2rem' w='30%'>
                 <Input
                     bg='white'

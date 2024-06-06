@@ -1,8 +1,8 @@
-import { Flex, Img, Box } from "@chakra-ui/react";
+import { Flex, Img, Box, Link } from "@chakra-ui/react";
 import logo from '../../../public/logo.png'
 import { BtnNavbar } from "./BtnNavbar";
 
-export function Navbar() {
+export function Navbar({ handleLogout }) {
 
     return (
         <Flex
@@ -17,8 +17,19 @@ export function Navbar() {
                 <Img src={logo} alt="logo" />
             </Box>
             <Flex>
-                    <BtnNavbar nome='Home' direcionar='/'/>
-                    <BtnNavbar nome='Reservar Sala' direcionar='/reserva'/>
+                <BtnNavbar nome='Home' direcionar='/' />
+                <BtnNavbar nome='Reservar Sala' direcionar='/reserva' />
+                <Flex
+                    justifyContent='center'
+                    alignItems='center'
+                    w='11rem'
+                    px='2rem'>
+                    <Link
+                        onClick={handleLogout}
+                        _hover={{ textDecoration: 'none' }}>
+                        Sair
+                    </Link>
+                </Flex>
             </Flex>
         </Flex>
     )

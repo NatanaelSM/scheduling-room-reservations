@@ -5,7 +5,6 @@ export function Reserva({token}){
 
     return(
         <>
-            <Navbar/>
             <Formulario token={token}/>
         </>
     )

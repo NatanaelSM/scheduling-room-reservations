@@ -1,5 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+
 export function BtnNavbar({ nome, direcionar }) {
 
     return (
