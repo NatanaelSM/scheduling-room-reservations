@@ -1,45 +1,51 @@
 import bcrypt from "bcrypt";
-import { db } from "../db.js";
+import { createConnection } from "../db.js";
 
-export const getUsers = (req, res) => {
+export const getUsers = async (req, res) => {
     const q = "SELECT * FROM usuario";
+    let conn;
 
-    db.query(q, (err, data) => {
-        if (err) return res.json(err);
-        return res.status(200).json(data)
-    })
-}
+    try {
+        const db = await createConnection();
+        const conn = await db.getConnection()
+        const rows = await conn.query(q);
+        res.status(200).json(rows);
+    } catch (err) {
+        res.json(err);
+    } finally {
+        if (conn) conn.end();
+    }
+};
 
-export const getUserById = (req, res) => {
+export const getUserById = async (req, res) => {
     const q = "SELECT * FROM usuario WHERE id = ?";
-
     const id = req.params.id;
+    let conn;
 
-    db.query(q, [id], (err, data) => {
-        if (err) return res.json(err);
-        return res.status(200).json(data)
-    })
-}
+    try {
+        const db = await createConnection();
+        const conn = await db.getConnection()
+        const rows = await conn.query(q, [id]);
+        res.status(200).json(rows);
+    } catch (err) {
+        res.json(err);
+    } finally {
+        if (conn) conn.end();
+    }
+};
 
+export const addUser = async (req, res) => {
+    const { nome, usuario, senha } = req.body;
 
-export const addUser = (req, res) => {
-    const {nome ,usuario, senha } = req.body;
-
-    // Hashing a senha antes de armazená-la no banco de dados
-    bcrypt.hash(senha, 10, (err, hash) => {
-        if (err) {
-            console.error("Erro no bcrypt:", err);
-            return res.status(500).send("Erro no servidor!");
-        }
-
+    try {
+        const hash = await bcrypt.hash(senha, 10);
         const q = "INSERT INTO usuario(`nome`, `senha`, `usuario`) VALUES (?, ?, ?)";
-        db.query(q, [nome ,hash, usuario], (err, result) => {
-            if (err) {
-                console.error("Erro no banco de dados:", err);
-                return res.status(500).send("Erro no servidor!");
-            }
-            res.status(201).send('Usuário criado com sucesso!');
-        });
-    });
-
+        const db = await createConnection(); 
+        const conn = await db.getConnection()
+        const result = await conn.query(q, [nome, hash, usuario]);
+        res.status(201).send('Usuário criado com sucesso!');
+    } catch (err) {
+        console.error("Erro no banco de dados:", err);
+        res.status(500).send("Erro no servidor!");
+    }
 };
