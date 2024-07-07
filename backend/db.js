@@ -1,9 +1,13 @@
 import mariadb from "mariadb";
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+const PASSWORD_DB = process.env.PASSWORD_DB;
 
 const dbConfig = {
     host: 'localhost',
     user: 'root',
-    password: '123456',
+    password: PASSWORD_DB,
     port: 3307,
     connectionLimit: 3 // Limite de conexões no pool
 };
