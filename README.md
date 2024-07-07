@@ -42,4 +42,4 @@ npm start
 * ChakraUI <img align="center" alt="Js" height="35" width="35" src="https://img.icons8.com/color/48/chakra-ui.png" alt="chakra-ui">
 
 
-<img width=100% src="https://capsule-render.vercel.app/api?type=waving&color=0b0b0b&height=120&section=footer"/>
+<img width=100% src="https://capsule-render.vercel.app/api?type=waving&color=d3d3d3&height=120&section=footer"/>
